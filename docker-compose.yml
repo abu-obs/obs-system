@@ -9,9 +9,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: obs_database
-      MYSQL_PASSWORD: root
+      MYSQL_PASSWORD: AnkaraScienceUniver2020
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
