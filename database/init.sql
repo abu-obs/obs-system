@@ -54,7 +54,6 @@ USE obs_database;
 
 
 
-USE universite_sistemi;
 
 
 CREATE TABLE FAKULTE (
