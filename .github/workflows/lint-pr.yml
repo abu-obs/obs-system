@@ -1,0 +1,46 @@
+# ============================================================
+# OBS - PR Başlık Formatı Kontrolü
+# ============================================================
+# PR başlığının Conventional Commits formatına uygun olmasını
+# sağlar. Böylece commit geçmişi temiz ve anlaşılır kalır.
+#
+# Geçerli PR başlık örnekleri:
+#   feat: öğrenci kayıt ekranı eklendi
+#   fix: not hesaplama hatası düzeltildi
+#   docs: SRS dokümanı güncellendi
+#   chore: eslint konfigürasyonu güncellendi
+#   refactor: veritabanı bağlantı katmanı yeniden yazıldı
+#   test: öğrenci servisi unit testleri eklendi
+#   style: kod formatlama düzeltmeleri
+#   ci: workflow dosyası güncellendi
+# ============================================================
+
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+    branches: [main, dev]
+
+jobs:
+  check-pr-title:
+    name: 📝 PR Başlık Kontrolü
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: PR başlığını kontrol et
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            chore
+            refactor
+            test
+            style
+            ci
+            perf
+            revert
