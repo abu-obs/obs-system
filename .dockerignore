@@ -1,0 +1,15 @@
+# Ignore Node and Nx huge folders
+node_modules
+.nx
+tmp
+coverage
+
+# Ignore compiled outputs
+dist
+build
+out
+
+# Ignore git and env
+.git
+.gitignore
+.env

@@ -296,3 +296,15 @@ model SUBE {
   @@index([Acilan_Ders_ID], map: "Acilan_Ders_ID")
   @@index([Akademik_Personel_ID], map: "Akademik_Personel_ID")
 }
+
+model KULLANICI {
+  ID                     Int       @id @default(autoincrement())
+  Eposta                 String    @unique @db.VarChar(150)
+  Sifre_Hash             String    @db.VarChar(255)
+  Rol                    String    @db.VarChar(50) // OGRENCI, AKADEMISYEN, ADMIN
+  Basarisiz_Giris_Sayisi Int       @default(0)
+  Hesap_Kilitli_Mi       Boolean   @default(false)
+  Kilit_Zamani           DateTime? @db.DateTime
+  Son_Aktivite           DateTime? @db.DateTime
+  Olusturulma_Tarihi     DateTime  @default(now())
+}
