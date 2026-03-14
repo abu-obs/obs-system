@@ -1,5 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -7,33 +9,20 @@ export class AuthController {
 
   /**
    * Endpoint: POST /api/auth/register
-   * Used for creating a new user password hash.
+   * Creates a new user account with hashed password in the database.
    */
   @Post('register')
-  async register(@Body() body: any) {
-    // In a real scenario, you save the user to the database via Prisma here.
-    // For now, we just test the hashing function.
-    const hashedPassword = await this.authService.hashData(body.password);
-    
-    return { 
-      message: 'User registered successfully', 
-      email: body.email, 
-      hashedPassword: hashedPassword 
-    };
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
   }
 
   /**
    * Endpoint: POST /api/auth/login
-   * Used for logging in and getting JWT tokens.
+   * Authenticates the user. Returns JWT tokens on success.
+   * Locks account after 5 consecutive failed attempts.
    */
   @Post('login')
-  async login(@Body() body: any) {
-    // In a real scenario, you would verify the user's password with the DB here.
-    // For now, we mock a successful login to generate tokens.
-    const mockUserId = 1; 
-    const mockRole = 'STUDENT'; 
-
-    const tokens = await this.authService.getTokens(mockUserId, body.email, mockRole);
-    return tokens;
+  async login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
   }
 }

@@ -3,7 +3,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './jwt.strategy'; // <-- Added import
+import { JwtStrategy } from './jwt.strategy';
+import { SessionTimeoutGuard } from './session-timeout.guard';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { JwtStrategy } from './jwt.strategy'; // <-- Added import
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy], // <-- Added JwtStrategy here
+  providers: [AuthService, JwtStrategy, SessionTimeoutGuard],
+  exports: [AuthService, SessionTimeoutGuard],
 })
 export class AuthModule {}
