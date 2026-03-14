@@ -11,7 +11,7 @@ services:
       MYSQL_DATABASE: obs_database
       MYSQL_PASSWORD: root
     ports:
-      - "3308:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 

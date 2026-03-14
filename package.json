@@ -10,6 +10,9 @@
   "dependencies": {
     "@prisma/client": "^6.19.2"
   },
+  "scripts": {
+    "dev": "cd src && npx nx run-many --target=serve --all"
+  },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   }
