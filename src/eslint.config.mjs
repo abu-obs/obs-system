@@ -10,6 +10,9 @@ export default [
       '**/out-tsc',
       '**/vite.config.*.timestamp*',
       '**/vitest.config.*.timestamp*',
+      '.nx/cache',
+      '.nx/workspace-data',
+      '**/node_modules',
     ],
   },
   {
