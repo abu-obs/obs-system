@@ -1,0 +1,12 @@
+# Ignore everything in these folders, no matter where they are
+**/node_modules
+**/.nx
+**/dist
+**/build
+**/tmp
+**/coverage
+
+# Standard ignores
+.git
+.gitignore
+.env

@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  # ANA VERİTABANI
+  # 1. DATABASE (MySQL)
   obs-mysql:
     image: mysql:8.0
     container_name: obs_mysql_db
@@ -9,13 +7,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: obs_database
-      MYSQL_PASSWORD: root
+      MYSQL_PASSWORD: AnkaraScienceUniver2020
     ports:
-      - "3308:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
-  # CACHE FOR REDIS
+  # 2. CACHE (Redis)
   obs-redis:
     image: redis:alpine
     container_name: obs_redis_cache
@@ -23,14 +21,5 @@ services:
     ports:
       - "6379:6379"
 
-  # RABBITMQ MESAJ KUYRUĞU
-  obs-rabbitmq:
-    image: rabbitmq:3-management
-    container_name: obs_message_queue
-    restart: always
-    ports:
-      - "5672:5672"   # Kodların bağlanacağı port
-      - "15672:15672" # Tarayıcıdan gireceğimiz yönetim paneli portu
-
 volumes:
-  mysql_data: # Veritabanı verilerinin bilgisayarı kapattığında silinmemesi için
+  mysql_data:

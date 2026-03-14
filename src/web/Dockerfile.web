@@ -1,0 +1,19 @@
+# --- DEVELOPMENT STAGE ---
+FROM node:20-alpine AS development
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+# Expose the port React/Vite runs on (usually 4200 for Nx)
+EXPOSE 4200
+# Command to run Nx React app in development mode
+CMD ["npx", "nx", "serve", "web", "--host", "0.0.0.0"]
+
+# --- PRODUCTION STAGE ---
+# For production, we use Nginx to serve static React files for maximum performance
+FROM nginx:alpine AS production
+COPY --from=development /usr/src/app/dist/apps/web /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
