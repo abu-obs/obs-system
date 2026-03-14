@@ -1,0 +1,298 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ACILAN_DERS {
+  ID                 Int             @id @default(autoincrement())
+  Ders_ID            Int
+  Akademik_Takvim_ID Int
+  DERS               DERS            @relation(fields: [Ders_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "ACILAN_DERS_ibfk_1")
+  AKADEMIK_TAKVIM    AKADEMIK_TAKVIM @relation(fields: [Akademik_Takvim_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "ACILAN_DERS_ibfk_2")
+  SUBE               SUBE[]
+
+  @@index([Akademik_Takvim_ID], map: "Akademik_Takvim_ID")
+  @@index([Ders_ID], map: "Ders_ID")
+}
+
+model AKADEMIK_PERSONEL {
+  ID                    Int                     @id @default(autoincrement())
+  Unvan                 String?                 @db.VarChar(100)
+  Ad                    String                  @db.VarChar(100)
+  Soyad                 String                  @db.VarChar(100)
+  Bolum_ID              Int
+  BOLUM                 BOLUM                   @relation(fields: [Bolum_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "AKADEMIK_PERSONEL_ibfk_1")
+  DANISMANLIK_GORUSMESI DANISMANLIK_GORUSMESI[]
+  OGRENCI               OGRENCI[]
+  SINAV_SALON_GOZETMEN  SINAV_SALON_GOZETMEN[]
+  SUBE                  SUBE[]
+
+  @@index([Bolum_ID], map: "Bolum_ID")
+}
+
+model AKADEMIK_TAKVIM {
+  ID          Int           @id @default(autoincrement())
+  Yil         String?       @db.VarChar(20)
+  Donem       String?       @db.VarChar(20)
+  Baslangic   DateTime?     @db.Date
+  Bitis       DateTime?     @db.Date
+  ACILAN_DERS ACILAN_DERS[]
+}
+
+model BOLUM {
+  ID                Int                 @id @default(autoincrement())
+  Fakulte_ID        Int
+  Ad                String              @db.VarChar(255)
+  AKADEMIK_PERSONEL AKADEMIK_PERSONEL[]
+  FAKULTE           FAKULTE             @relation(fields: [Fakulte_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "BOLUM_ibfk_1")
+  PROGRAM           PROGRAM[]
+
+  @@index([Fakulte_ID], map: "Fakulte_ID")
+}
+
+model CAP_YANDAL {
+  ID         Int     @id @default(autoincrement())
+  Ogrenci_ID Int
+  Program_ID Int
+  Tur        String? @db.VarChar(50)
+  Durum      String? @db.VarChar(50)
+  OGRENCI    OGRENCI @relation(fields: [Ogrenci_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "CAP_YANDAL_ibfk_1")
+  PROGRAM    PROGRAM @relation(fields: [Program_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "CAP_YANDAL_ibfk_2")
+
+  @@index([Ogrenci_ID], map: "Ogrenci_ID")
+  @@index([Program_ID], map: "Program_ID")
+}
+
+model DANISMANLIK_GORUSMESI {
+  ID                Int               @id @default(autoincrement())
+  Danisman_ID       Int
+  Ogrenci_ID        Int
+  Tarih             DateTime?         @db.Date
+  Konu              String?           @db.VarChar(255)
+  AKADEMIK_PERSONEL AKADEMIK_PERSONEL @relation(fields: [Danisman_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DANISMANLIK_GORUSMESI_ibfk_1")
+  OGRENCI           OGRENCI           @relation(fields: [Ogrenci_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DANISMANLIK_GORUSMESI_ibfk_2")
+
+  @@index([Danisman_ID], map: "Danisman_ID")
+  @@index([Ogrenci_ID], map: "Ogrenci_ID")
+}
+
+model DERS {
+  ID                                                    Int                 @id @default(autoincrement())
+  Kod                                                   String              @db.VarChar(50)
+  Ad                                                    String              @db.VarChar(255)
+  Kredi                                                 Int
+  AKTS                                                  Int
+  Teorik_Saat                                           Int
+  Pratik_Saat                                           Int
+  ACILAN_DERS                                           ACILAN_DERS[]
+  DERS_ESDEGERLIK_DERS_ESDEGERLIK_Ders_IDToDERS         DERS_ESDEGERLIK[]   @relation("DERS_ESDEGERLIK_Ders_IDToDERS")
+  DERS_ESDEGERLIK_DERS_ESDEGERLIK_Esdeger_Ders_IDToDERS DERS_ESDEGERLIK[]   @relation("DERS_ESDEGERLIK_Esdeger_Ders_IDToDERS")
+  DERS_ONKOSUL_DERS_ONKOSUL_Ders_IDToDERS               DERS_ONKOSUL[]      @relation("DERS_ONKOSUL_Ders_IDToDERS")
+  DERS_ONKOSUL_DERS_ONKOSUL_Onkosul_Ders_IDToDERS       DERS_ONKOSUL[]      @relation("DERS_ONKOSUL_Onkosul_Ders_IDToDERS")
+  MUFREDAT_DERSLERI                                     MUFREDAT_DERSLERI[]
+}
+
+model DERSLIK {
+  ID                   Int                    @id @default(autoincrement())
+  Ad                   String?                @db.VarChar(100)
+  Kapasite             Int?
+  Tip                  String?                @db.VarChar(50)
+  DERS_PROGRAMI        DERS_PROGRAMI[]
+  SINAV_SALON_GOZETMEN SINAV_SALON_GOZETMEN[]
+}
+
+model DERS_ESDEGERLIK {
+  Ders_ID                                    Int
+  Esdeger_Ders_ID                            Int
+  DERS_DERS_ESDEGERLIK_Ders_IDToDERS         DERS @relation("DERS_ESDEGERLIK_Ders_IDToDERS", fields: [Ders_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_ESDEGERLIK_ibfk_1")
+  DERS_DERS_ESDEGERLIK_Esdeger_Ders_IDToDERS DERS @relation("DERS_ESDEGERLIK_Esdeger_Ders_IDToDERS", fields: [Esdeger_Ders_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_ESDEGERLIK_ibfk_2")
+
+  @@id([Ders_ID, Esdeger_Ders_ID])
+  @@index([Esdeger_Ders_ID], map: "Esdeger_Ders_ID")
+}
+
+model DERS_KAYIT {
+  ID             Int           @id @default(autoincrement())
+  Ogrenci_ID     Int
+  Sube_ID        Int
+  Danisman_Onayi Boolean?
+  Durum          String?       @db.VarChar(50)
+  OGRENCI        OGRENCI       @relation(fields: [Ogrenci_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_KAYIT_ibfk_1")
+  SUBE           SUBE          @relation(fields: [Sube_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_KAYIT_ibfk_2")
+  DEVAMSIZLIK    DEVAMSIZLIK[]
+  DONEM_NOTU     DONEM_NOTU[]
+  NOTLANDIRMA    NOTLANDIRMA[]
+
+  @@index([Ogrenci_ID], map: "Ogrenci_ID")
+  @@index([Sube_ID], map: "Sube_ID")
+}
+
+model DERS_ONKOSUL {
+  Ders_ID                                 Int
+  Onkosul_Ders_ID                         Int
+  Gecme_Zorunlu_Mu                        Boolean? @default(true)
+  DERS_DERS_ONKOSUL_Ders_IDToDERS         DERS     @relation("DERS_ONKOSUL_Ders_IDToDERS", fields: [Ders_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_ONKOSUL_ibfk_1")
+  DERS_DERS_ONKOSUL_Onkosul_Ders_IDToDERS DERS     @relation("DERS_ONKOSUL_Onkosul_Ders_IDToDERS", fields: [Onkosul_Ders_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_ONKOSUL_ibfk_2")
+
+  @@id([Ders_ID, Onkosul_Ders_ID])
+  @@index([Onkosul_Ders_ID], map: "Onkosul_Ders_ID")
+}
+
+model DERS_PROGRAMI {
+  ID             Int       @id @default(autoincrement())
+  Sube_ID        Int
+  Derslik_ID     Int
+  Gun            String?   @db.VarChar(20)
+  Baslangic_Saat DateTime? @db.Time(0)
+  SUBE           SUBE      @relation(fields: [Sube_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_PROGRAMI_ibfk_1")
+  DERSLIK        DERSLIK   @relation(fields: [Derslik_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DERS_PROGRAMI_ibfk_2")
+
+  @@index([Derslik_ID], map: "Derslik_ID")
+  @@index([Sube_ID], map: "Sube_ID")
+}
+
+model DEVAMSIZLIK {
+  ID            Int        @id @default(autoincrement())
+  Ders_Kayit_ID Int
+  Tarih         DateTime?  @db.Date
+  Saat          DateTime?  @db.Time(0)
+  Durum         String?    @db.VarChar(20)
+  DERS_KAYIT    DERS_KAYIT @relation(fields: [Ders_Kayit_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DEVAMSIZLIK_ibfk_1")
+
+  @@index([Ders_Kayit_ID], map: "Ders_Kayit_ID")
+}
+
+model DONEM_NOTU {
+  ID            Int        @id @default(autoincrement())
+  Ders_Kayit_ID Int
+  Harf_Notu     String?    @db.VarChar(5)
+  Kilitli_Mi    Boolean?
+  Gecti_Mi      Boolean?
+  DERS_KAYIT    DERS_KAYIT @relation(fields: [Ders_Kayit_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "DONEM_NOTU_ibfk_1")
+
+  @@index([Ders_Kayit_ID], map: "Ders_Kayit_ID")
+}
+
+model FAKULTE {
+  ID    Int     @id @default(autoincrement())
+  Ad    String  @db.VarChar(255)
+  BOLUM BOLUM[]
+}
+
+model MUFREDAT {
+  ID                Int                 @id @default(autoincrement())
+  Program_ID        Int
+  Yil               String              @db.VarChar(10)
+  Versiyon          String?             @db.VarChar(50)
+  PROGRAM           PROGRAM             @relation(fields: [Program_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "MUFREDAT_ibfk_1")
+  MUFREDAT_DERSLERI MUFREDAT_DERSLERI[]
+
+  @@index([Program_ID], map: "Program_ID")
+}
+
+model MUFREDAT_DERSLERI {
+  ID          Int      @id @default(autoincrement())
+  Mufredat_ID Int
+  Ders_ID     Int
+  Yariyil     Int
+  Zorunlu_Mu  Boolean? @default(true)
+  MUFREDAT    MUFREDAT @relation(fields: [Mufredat_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "MUFREDAT_DERSLERI_ibfk_1")
+  DERS        DERS     @relation(fields: [Ders_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "MUFREDAT_DERSLERI_ibfk_2")
+
+  @@index([Ders_ID], map: "Ders_ID")
+  @@index([Mufredat_ID], map: "Mufredat_ID")
+}
+
+model NOTLANDIRMA {
+  ID            Int        @id @default(autoincrement())
+  Ders_Kayit_ID Int
+  Sinav_Turu    String?    @db.VarChar(20)
+  Puan          Decimal?   @db.Decimal(5, 2)
+  Itiraz_Var_Mi Boolean?
+  DERS_KAYIT    DERS_KAYIT @relation(fields: [Ders_Kayit_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "NOTLANDIRMA_ibfk_1")
+
+  @@index([Ders_Kayit_ID], map: "Ders_Kayit_ID")
+}
+
+model OGRENCI {
+  ID                    Int                     @id @default(autoincrement())
+  Ogrenci_No            String                  @unique(map: "Ogrenci_No") @db.VarChar(50)
+  TCKN                  String                  @unique(map: "TCKN") @db.VarChar(11)
+  Ad                    String                  @db.VarChar(100)
+  Soyad                 String                  @db.VarChar(100)
+  Eposta                String                  @unique(map: "Eposta") @db.VarChar(150)
+  Telefon               String?                 @db.VarChar(20)
+  Adres                 String?                 @db.Text
+  Durum                 String?                 @db.VarChar(50)
+  Program_ID            Int
+  Danisman_ID           Int?
+  GPA                   Decimal?                @db.Decimal(3, 2)
+  CGPA                  Decimal?                @db.Decimal(3, 2)
+  CAP_YANDAL            CAP_YANDAL[]
+  DANISMANLIK_GORUSMESI DANISMANLIK_GORUSMESI[]
+  DERS_KAYIT            DERS_KAYIT[]
+  PROGRAM               PROGRAM                 @relation(fields: [Program_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "OGRENCI_ibfk_1")
+  AKADEMIK_PERSONEL     AKADEMIK_PERSONEL?      @relation(fields: [Danisman_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "OGRENCI_ibfk_2")
+
+  @@index([Danisman_ID], map: "Danisman_ID")
+  @@index([Program_ID], map: "Program_ID")
+}
+
+model PROGRAM {
+  ID         Int          @id @default(autoincrement())
+  Bolum_ID   Int
+  Ad         String       @db.VarChar(255)
+  Tur        String       @db.VarChar(50)
+  CAP_YANDAL CAP_YANDAL[]
+  MUFREDAT   MUFREDAT[]
+  OGRENCI    OGRENCI[]
+  BOLUM      BOLUM        @relation(fields: [Bolum_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "PROGRAM_ibfk_1")
+
+  @@index([Bolum_ID], map: "Bolum_ID")
+}
+
+model SINAV_PROGRAMI {
+  ID                   Int                    @id @default(autoincrement())
+  Sube_ID              Int
+  Sinav_Turu           String?                @db.VarChar(50)
+  Tarih                DateTime?              @db.Date
+  Saat                 DateTime?              @db.Time(0)
+  SUBE                 SUBE                   @relation(fields: [Sube_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "SINAV_PROGRAMI_ibfk_1")
+  SINAV_SALON_GOZETMEN SINAV_SALON_GOZETMEN[]
+
+  @@index([Sube_ID], map: "Sube_ID")
+}
+
+model SINAV_SALON_GOZETMEN {
+  ID                Int               @id @default(autoincrement())
+  Sinav_Programi_ID Int
+  Derslik_ID        Int
+  Gozetmen_ID       Int
+  SINAV_PROGRAMI    SINAV_PROGRAMI    @relation(fields: [Sinav_Programi_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "SINAV_SALON_GOZETMEN_ibfk_1")
+  DERSLIK           DERSLIK           @relation(fields: [Derslik_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "SINAV_SALON_GOZETMEN_ibfk_2")
+  AKADEMIK_PERSONEL AKADEMIK_PERSONEL @relation(fields: [Gozetmen_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "SINAV_SALON_GOZETMEN_ibfk_3")
+
+  @@index([Derslik_ID], map: "Derslik_ID")
+  @@index([Gozetmen_ID], map: "Gozetmen_ID")
+  @@index([Sinav_Programi_ID], map: "Sinav_Programi_ID")
+}
+
+model SUBE {
+  ID                   Int               @id @default(autoincrement())
+  Acilan_Ders_ID       Int
+  Sube_Kodu            String?           @db.VarChar(10)
+  Akademik_Personel_ID Int
+  Kontenjan            Int?
+  DERS_KAYIT           DERS_KAYIT[]
+  DERS_PROGRAMI        DERS_PROGRAMI[]
+  SINAV_PROGRAMI       SINAV_PROGRAMI[]
+  ACILAN_DERS          ACILAN_DERS       @relation(fields: [Acilan_Ders_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "SUBE_ibfk_1")
+  AKADEMIK_PERSONEL    AKADEMIK_PERSONEL @relation(fields: [Akademik_Personel_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "SUBE_ibfk_2")
+
+  @@index([Acilan_Ders_ID], map: "Acilan_Ders_ID")
+  @@index([Akademik_Personel_ID], map: "Akademik_Personel_ID")
+}
